@@ -12,3 +12,13 @@
 - python manage.py startapp categories
 - python manage.py startapp posts
 - python manage.py startapp comments
+
+## Migrations
+- python manage.py makemigrations
+- python manage.py migrate
+
+## Create Super User admin
+- python manage.py createsuperuser
+
+## Run server
+- python manage.py runserver
