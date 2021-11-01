@@ -7,16 +7,17 @@ from django.db.models import Q, Count, Case, When
 from comments.forms import FormComment
 from comments.models import Comment
 from django.contrib import messages
-
+from django.db import connection
 
 class PostIndex(ListView):
     model = Post
     template_name = 'posts/index.html'
-    paginate_by = 2
+    paginate_by = 10
     context_object_name = 'posts'
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.select_related('category')
         qs = qs.order_by('-id').filter(publish=True)
         qs = qs.annotate(
             number_comments=Count(
@@ -27,6 +28,11 @@ class PostIndex(ListView):
         )
 
         return qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['connection'] = connection
+        return context
 
 
 class PostSearch(PostIndex):

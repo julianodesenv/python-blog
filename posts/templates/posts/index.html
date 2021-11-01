@@ -35,6 +35,11 @@
     </div>
     {% endfor %}
 </div>
+
+<p>
+    {{ connection.queries|length }}<hr />
+    {{ connection.queries }}
+</p>
 <!--/CONTENT-->
     {% include 'inc/_pagination.html' %}
 {% endblock %}
