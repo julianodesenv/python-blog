@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block container %}
+<!-- POST -->
+<div class="container">
+    <div class="row pt-5">
+        <div class="col-xl"></div>
+        <div class="col-xl-8 text-center">
+            <h2>{{ post.name }}</h2>
+            <h5>{{ post.resume }}</h5>
+            <p class="text-muted mt-4">
+                <small>
+                    {{ post.author|title }} | {{ post.date }} | {{ post.category }}
+                </small>
+            </p>
+        </div>
+        <div class="col-xl"></div>
+    </div>
+
+    <div class="row pt-5">
+        <div class="col-xl"></div>
+        <div class="col-xl-8">
+            {% if post.image %}
+            <img class="img-fluid pb-5 " src="{{ post.image.url }}" alt="{{ post.name }}">
+            {% endif %}
+            {{ post.description|safe }}            
+        </div>
+        <div class="col-xl"></div>
+    </div>
+
+    {% if comments %}
+    <div class="row pt-5">
+        <div class="col-xl"></div>
+        <div class="col-xl-8">
+            <h2 class="my-3">Comentários ({{ comments.count }})</h2>
+            {% for comment in comments %}
+            <h5 class="mb-2 mt-5">{{ comment.name }}:</h5>
+            <small class="text-muted">{{ comment.date }}</small>
+            <p class="mb-1">
+                {{ comment.comment }}
+            </p>
+            {% endfor %}
+        </div>
+        <div class="col-xl"></div>
+    </div>
+    {% endif %}
+
+    <div class="row pt-5">
+        <div class="col-xl"></div>
+        <div class="col-xl-8">
+            <h2 class="my-3">Deixe um comentário</h2>
+            <form method="POST" action="#envia_comentario">
+                {% csrf_token %}
+                <table class="table">
+                    {{ form }}
+                    <tr>
+                        <td colspan="2">
+                            {% include 'inc/_messages.html' %}
+                            <input id="envia_comentario" type="submit" class="btn btn-primary"
+                                value="Enviar">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="col-xl"></div>
+    </div>
+</div>
+<!-- POST -->                
+{% endblock %}
