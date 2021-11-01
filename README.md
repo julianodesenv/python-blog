@@ -22,3 +22,7 @@
 
 ## Run server
 - python manage.py runserver
+
+## Deploy
+- Create file local_settings
+- python manage.py collectstatic
