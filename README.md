@@ -26,3 +26,8 @@
 ## Deploy
 - Create file local_settings
 - python manage.py collectstatic
+
+## Create venv
+- python -m venv venv
+- venv/Scripts/activate
+- venv/Scripts/deactivate
