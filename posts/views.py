@@ -1,5 +1,6 @@
 from typing import List
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 from .models import Post
@@ -71,6 +72,40 @@ class PostCategory(PostIndex):
         return qs
 
 
+class PostShow(View):
+    template_name = 'posts/show.html'
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        pk = self.kwargs.get('pk')
+        post = get_object_or_404(Post, pk=pk, publish=True)
+        self.context = {
+            'post': post,
+            'comments': Comment.objects.filter(post_comment=post, publish=True),
+            'form': FormComment(request.POST or None),
+        }
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.context['form']
+
+        if not form.is_valid():
+            return render(request, self.template_name, self.context)
+
+        comment = form.save(commit=False)
+
+        if request.user.is_authenticated:
+            comment.user_comment = request.user
+
+        comment.post_comment = self.context['post']
+        comment.save()
+        messages.success(request, 'Seu comentário foi enviado para revisão.')
+        return redirect('post_show', pk=self.kwargs.get('pk'))
+
+"""
 class PostShow(UpdateView):
     template_name = 'posts/show.html'
     model = Post
@@ -101,4 +136,6 @@ class PostShow(UpdateView):
         comment.save()
         messages.success(self.request, 'Comentário enviado com sucesso!')
         return redirect('post_show', pk=post.id)
+"""
+
 
